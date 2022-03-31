@@ -1,6 +1,10 @@
 // cpp files contain the implementation of our program while h files contains the declarations
+#include <Arduino.h>
+#include <sensor_reading.h>
+#include <settings.h>
 
-void refresh_reading(){
+
+void refresh_reading(Adafruit_BME280 bme){
   float f_temperature;
   float f_humitidity;
   float f_pressure;
