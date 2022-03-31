@@ -1,7 +1,8 @@
 // cpp files contain the implementation of our program while h files contains the declarations
 #include <Arduino.h>
-#include <sensor_reading.h>
-#include <settings.h>
+#include "settings.h"
+#include "sensor_reading.h"
+
 
 
 void refresh_reading(Adafruit_BME280 bme){

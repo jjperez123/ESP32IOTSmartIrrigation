@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "sensor_reading.h" // this inclusion will link the two files together.
-#include <settings.h>
+#include "settings.h"
 
 Adafruit_BME280 bme; //I2C
 
