@@ -12,7 +12,7 @@ void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft){
   float f_altitude;
 
   uint16_t bg = TFT_BLACK;
-  uint16_t fg = TFT_WHITE;
+  //uint16_t fg = TFT_WHITE;
 
   digitalWrite(LED_BUILTIN, HIGH);
 
@@ -23,6 +23,7 @@ void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft){
 
   
   tft->setTextColor(TFT_YELLOW,bg);
+  tft->loadFont("RobotSerif-36");
 
   // Temperature
   Serial.print(f_temperature);
