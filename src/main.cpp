@@ -16,7 +16,7 @@ void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
   Serial.begin(115200);
   
-  if(!SPIFFS.begin()){
+  if(!SPIFFS.begin()) {
     Serial.println("SPIFF initialisation failed!");
     while(1) yield(); // stay here twidddling thumbs waiting.
   }
@@ -24,7 +24,7 @@ void setup() {
   tft.init();
 
   tft.setRotation(1);
-  tft.loadFont("RobotSerif-36"); // Create TTF fonts using instructions at
+  tft.loadFont("RobotoSerif-36"); // Create TTF fonts using instructions at
   tft.setTextColor(fg,bg);
   tft.fillScreen(bg);
 
