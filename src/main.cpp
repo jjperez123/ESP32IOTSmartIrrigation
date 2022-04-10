@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "sensor_reading.h" // this inclusion will link the two files together.
-#include "TFT_eSPI.h"
 #include "settings.h"
+#include "bmp_functions.h"
 
 
 Adafruit_BME280 bme; //I2C
@@ -43,7 +43,7 @@ void setup() {
   }
   tft.loadFont("NotoSansBold15");
   tft.fillScreen(bg); //Clear the screen
-
+   drawBmp("/Logo.bmp",160,198, &tft);
 }
 
 void loop() {
