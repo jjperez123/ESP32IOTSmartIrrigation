@@ -2,7 +2,9 @@
 #include "sensor_reading.h" // this inclusion will link the two files together.
 #include "settings.h"
 #include "bmp_functions.h"
+#include <TaskScheduler.h>
 
+void sensor_reading_update();
 
 Adafruit_BME280 bme; //I2C
 
@@ -10,6 +12,10 @@ TFT_eSPI tft = TFT_eSPI();
 
 uint16_t bg = TFT_BLACK;
 uint16_t fg = TFT_WHITE;
+
+//tasks
+Task t1_bme280(2000, TASK_FOREVER, &sensor_reading_update);
+Scheduler runner;
 
 void setup() {
   // put your setup code here, to run once:
@@ -21,6 +27,9 @@ void setup() {
     while(1) yield(); // stay here twidddling thumbs waiting.
   }
 
+  // Add tasks to runner
+  runner.addTask(t1_bme280);
+  t1_bme280.enable();
   tft.init();
 
   tft.setRotation(1);
@@ -48,10 +57,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  refresh_readings(&bme, &tft);
-  delay(2000);
+  runner.execute();
 }
 
+void sensor_reading_update(){
 
+  refresh_readings(&bme, &tft);
+
+}
 
 
