@@ -3,6 +3,7 @@
 #include "settings.h"
 #include "bmp_functions.h"
 #include <TaskScheduler.h>
+#include "network_config.h"
 
 void sensor_reading_update();
 
@@ -50,6 +51,11 @@ void setup() {
     Serial.println("Could not find valid BME280 sensor, check wiring");
     while(1);
   }
+  // Connect to Wifi
+  io.connect();
+
+
+
   tft.loadFont("NotoSansBold15");
   tft.fillScreen(bg); //Clear the screen
    drawBmp("/Logo.bmp",160,198, &tft);
