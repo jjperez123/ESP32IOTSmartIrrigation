@@ -1,7 +1,7 @@
 #include <Arduino.h>
+#include "settings.h"         // The order is important!
 #include "sensor_reading.h"
 #include "TFT_eSPI.h"         // ESP32 Hardware-specific library
-#include "settings.h"         // The order is important!
 #include "bmp_functions.h"
 #include "TaskScheduler.h"
 #include "network_config.h"
@@ -33,6 +33,16 @@ Task t2_clock(1000, TASK_FOREVER, &clock_update);
 
 // Create the scheduler
 Scheduler runner;
+
+//Adafruit.IO feeds
+//Avoid underscores in the feed names, they cause problems with grouping
+AdafruitIO_WiFi io(IO_USERNAME,IO_KEY,WIFI_SSID,WIFI_PASS);
+AdafruitIO_Feed *temperature = io.feed("smart-farming.temperature");
+AdafruitIO_Feed *humidity = io.feed("smart-farming.humidity");
+AdafruitIO_Feed *barpressure = io.feed("smart-farming.barpressure");
+AdafruitIO_Feed *altitude = io.feed("	smart-farming.altitude");
+
+
 
 void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
@@ -101,7 +111,12 @@ void loop() {
 
 void sensor_readings_update()
 {
-  refresh_readings(&bme, &tft);
+  refresh_readings(&bme, 
+                   &tft,
+                  temperature,
+                  humidity,
+                  barpressure,
+                  altitude);
 }
 
 void clock_update()

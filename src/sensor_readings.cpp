@@ -1,11 +1,16 @@
 // cpp files contain the implementation of our program while h files contains the declarations
 #include <Arduino.h>
-#include "settings.h"
+
 #include "sensor_reading.h"
 
 
 
-void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft){
+    void refresh_readings(Adafruit_BME280* bme, 
+                          TFT_eSPI*        tft,
+                          AdafruitIO_Feed* temp,
+                          AdafruitIO_Feed* hum,
+                          AdafruitIO_Feed* bar,
+                          AdafruitIO_Feed* alt){
   float f_temperature;
   float f_humitidity;
   float f_pressure;
@@ -56,6 +61,14 @@ void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft){
   tft->setCursor(5,170);
   tft->print(f_altitude);
   tft->println(" m");
+
+  // Send data to Adafruit.IO
+  temp ->save(f_temperature);
+  hum ->save(f_humitidity);
+  bar ->save(f_pressure);
+  alt ->save(f_altitude);
+
+
 
   digitalWrite(LED_BUILTIN, LOW);
   Serial.println("----------------");

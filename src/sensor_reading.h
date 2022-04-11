@@ -6,10 +6,17 @@
     #include <Adafruit_Sensor.h>
     #include <Adafruit_BME280.h>
     #include "TFT_eSPI.h"
+    #include "settings.h"
 
     #define SEALEVELPRESSURE_HPA (1013.25)
 
     // In h files you want to create declaration of the public functions that are available.
-    void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft); // Declare in the header so that the compiler knows about it is called in
+
+    void refresh_readings(Adafruit_BME280* bme, 
+                          TFT_eSPI* tft,
+                          AdafruitIO_Feed* temp,
+                          AdafruitIO_Feed* hum,
+                          AdafruitIO_Feed* bar,
+                          AdafruitIO_Feed* alt); 
 
 #endif
