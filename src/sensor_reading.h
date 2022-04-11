@@ -2,7 +2,7 @@
 
 #ifndef SENSOR_READING_H
 #define SENSOR_READINGS_H
-
+    #include <Arduino.h>
     #include <Adafruit_Sensor.h>
     #include <Adafruit_BME280.h>
     #include "TFT_eSPI.h"
@@ -13,7 +13,7 @@
     // In h files you want to create declaration of the public functions that are available.
 
     void refresh_readings(Adafruit_BME280* bme, 
-                          TFT_eSPI* tft,
+                          TFT_eSPI*         tft,
                           AdafruitIO_Feed* temp,
                           AdafruitIO_Feed* hum,
                           AdafruitIO_Feed* bar,
