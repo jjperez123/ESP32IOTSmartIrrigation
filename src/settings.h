@@ -13,4 +13,5 @@
 #define SETTINGS_H
     #define LED_BUILTIN 25 // this is valid any devkit
     #include "TFT_eSPI.h"
+    #include "clock.h"
 #endif
