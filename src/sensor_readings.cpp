@@ -1,29 +1,37 @@
 // cpp files contain the implementation of our program while h files contains the declarations
 #include <Arduino.h>
-#include "settings.h"
+
 #include "sensor_reading.h"
 
 
 
-void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft){
+    void refresh_readings(Adafruit_BME280* bme, 
+                          TFT_eSPI*        tft,
+                          AdafruitIO_Feed* temp,
+                          AdafruitIO_Feed* hum,
+                          AdafruitIO_Feed* bar,
+                          AdafruitIO_Feed* alt){
   float f_temperature;
   float f_humitidity;
   float f_pressure;
   float f_altitude;
 
+  tft->loadFont("RobotoSerif-36");
+  tft->setRotation(1);
   uint16_t bg = TFT_BLACK;
-  //uint16_t fg = TFT_WHITE;
+  uint16_t fg = TFT_WHITE;
 
-  digitalWrite(LED_BUILTIN, HIGH);
+  tft->setCursor(5, 5);
+  tft->setTextColor(fg, bg);
+  tft->println("Right now...");
 
   f_temperature = bme->readTemperature();
   f_humitidity  = bme->readHumidity();
   f_pressure    = bme->readPressure() / 100.0F;
   f_altitude    = bme->readAltitude(SEALEVELPRESSURE_HPA);
 
+  tft->setTextColor(TFT_YELLOW, bg);
   
-  tft->setTextColor(TFT_YELLOW,bg);
-  tft->loadFont("RobotoSerif-36");
 
   // Temperature
   Serial.print(f_temperature);
@@ -57,7 +65,15 @@ void refresh_readings(Adafruit_BME280* bme, TFT_eSPI* tft){
   tft->print(f_altitude);
   tft->println(" m");
 
-  digitalWrite(LED_BUILTIN, LOW);
+  // Send data to Adafruit.IO
+  temp ->save(f_temperature);
+  hum ->save(f_humitidity);
+  bar ->save(f_pressure);
+  alt ->save(f_altitude);
+
+
+
+  //digitalWrite(LED_BUILTIN, LOW);
   Serial.println("----------------");
 
 }

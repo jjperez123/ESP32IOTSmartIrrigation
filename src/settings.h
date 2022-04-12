@@ -11,7 +11,9 @@
 
 #ifndef SETTINGS_H
 #define SETTINGS_H
-    #define LED_BUILTIN 25 // this is valid any devkit
+    #define LED_BUILTIN 2 // this is valid any devkit
     #include "TFT_eSPI.h"
+    #include "AdafruitIO_WiFi.h"
+    #include "network_config.h"
     #include "clock.h"
 #endif

@@ -1,16 +1,12 @@
 #include <Arduino.h>
-#include "sensor_reading.h"
-#include "TFT_eSPI.h"         // ESP32 Hardware-specific library
 #include "settings.h"         // The order is important!
+#include "sensor_reading.h"
+//#include "TFT_eSPI.h"         // ESP32 Hardware-specific library
 #include "bmp_functions.h"
 #include "TaskScheduler.h"
 #include "network_config.h"
 
-// SPIFFS plugin for the Arduino IDE: https://github.com/me-no-dev/arduino-esp32fs-plugin
 
-// In this version of the program, start using git.
-// In the project root, do "git init", "git add .", "git commit -am "First commit"".
-// Once this is done, Code will be showing the changed files in the Source Control pane.
 
 void sensor_readings_update();
 void clock_update();
@@ -28,11 +24,21 @@ uint16_t fg = TFT_WHITE;
 
 // Setup tasks for the task scheduler
 // The third argument taks a pointer to a function, but cannot have parameters.
-Task t1_bme280(2000, TASK_FOREVER, &sensor_readings_update);
+Task t1_bme280(30000, TASK_FOREVER, &sensor_readings_update);
 Task t2_clock(1000, TASK_FOREVER, &clock_update);
 
 // Create the scheduler
 Scheduler runner;
+
+//Adafruit.IO feeds
+//Avoid underscores in the feed names, they cause problems with grouping
+AdafruitIO_WiFi io(IO_USERNAME,IO_KEY,WIFI_SSID,WIFI_PASS);
+AdafruitIO_Feed *temperature =  io.feed("smart-farming.temperature");
+AdafruitIO_Feed *humidity    =  io.feed("smart-farming.humidity");
+AdafruitIO_Feed *barpressure =  io.feed("smart-farming.barpressure");
+AdafruitIO_Feed *altitude    =  io.feed("	smart-farming.altitude");
+
+
 
 void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
@@ -52,6 +58,7 @@ void setup() {
   tft.fillScreen(bg);
 
   tft.setCursor(0, 0);
+  tft.loadFont("NotoSansBold15");
   tft.println("Hello!");
   tft.println("Starting BME sensor...");
   delay(1000);
@@ -73,6 +80,7 @@ void setup() {
     Serial.print(".");
     delay(500);
   }
+
   // Check the Wifi status
   Serial.println(io.statusText());
 
@@ -97,16 +105,23 @@ void setup() {
 void loop() {
   // Execute the scheduler runner
   runner.execute();
+
+  io.run();
 }
 
 void sensor_readings_update()
 {
-  refresh_readings(&bme, &tft);
+  refresh_readings(&bme, 
+                   &tft,
+                  temperature,
+                  humidity,
+                  barpressure,
+                  altitude);
 }
 
 void clock_update()
 {
   Serial.println(io.statusText());
-  printLocalTime();
+  //printLocalTime();
   refresh_clock(&tft);
 }
