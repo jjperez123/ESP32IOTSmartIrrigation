@@ -24,7 +24,7 @@ uint16_t fg = TFT_WHITE;
 
 // Setup tasks for the task scheduler
 // The third argument taks a pointer to a function, but cannot have parameters.
-Task t1_bme280(2000, TASK_FOREVER, &sensor_readings_update);
+Task t1_bme280(30000, TASK_FOREVER, &sensor_readings_update);
 Task t2_clock(1000, TASK_FOREVER, &clock_update);
 
 // Create the scheduler
@@ -58,6 +58,7 @@ void setup() {
   tft.fillScreen(bg);
 
   tft.setCursor(0, 0);
+  tft.loadFont("NotoSansBold15");
   tft.println("Hello!");
   tft.println("Starting BME sensor...");
   delay(1000);
@@ -104,6 +105,8 @@ void setup() {
 void loop() {
   // Execute the scheduler runner
   runner.execute();
+
+  io.run();
 }
 
 void sensor_readings_update()
@@ -119,6 +122,6 @@ void sensor_readings_update()
 void clock_update()
 {
   Serial.println(io.statusText());
-  printLocalTime();
+  //printLocalTime();
   refresh_clock(&tft);
 }

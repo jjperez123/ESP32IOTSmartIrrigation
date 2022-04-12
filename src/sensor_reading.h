@@ -1,12 +1,12 @@
 // The header files contain the declarations while the cpp file contain the implementations.
+   #include "settings.h"
 
 #ifndef SENSOR_READING_H
 #define SENSOR_READINGS_H
-    #include <Arduino.h>
     #include <Adafruit_Sensor.h>
     #include <Adafruit_BME280.h>
     #include "TFT_eSPI.h"
-    #include "settings.h"
+ 
 
     #define SEALEVELPRESSURE_HPA (1013.25)
 

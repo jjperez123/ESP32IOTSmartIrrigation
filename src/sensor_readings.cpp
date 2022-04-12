@@ -16,19 +16,22 @@
   float f_pressure;
   float f_altitude;
 
+  tft->loadFont("RobotoSerif-36");
+  tft->setRotation(1);
   uint16_t bg = TFT_BLACK;
-  //uint16_t fg = TFT_WHITE;
+  uint16_t fg = TFT_WHITE;
 
-  digitalWrite(LED_BUILTIN, HIGH);
+  tft->setCursor(5, 5);
+  tft->setTextColor(fg, bg);
+  tft->println("Right now...");
 
   f_temperature = bme->readTemperature();
   f_humitidity  = bme->readHumidity();
   f_pressure    = bme->readPressure() / 100.0F;
   f_altitude    = bme->readAltitude(SEALEVELPRESSURE_HPA);
 
+  tft->setTextColor(TFT_YELLOW, bg);
   
-  tft->setTextColor(TFT_YELLOW,bg);
-  tft->loadFont("RobotoSerif-36");
 
   // Temperature
   Serial.print(f_temperature);
@@ -70,7 +73,7 @@
 
 
 
-  digitalWrite(LED_BUILTIN, LOW);
+  //digitalWrite(LED_BUILTIN, LOW);
   Serial.println("----------------");
 
 }
