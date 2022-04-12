@@ -106,6 +106,8 @@ void setup() {
 
   tft.fillScreen(bg);
   drawBmp("/te.bmp", 160, 198, &tft);
+  // Check the Wifi status and update TFT
+  wifiStatus(&tft, &io);
 }
 
 void loop() {
@@ -123,7 +125,10 @@ void sensor_readings_update()
                   humidity,
                   barpressure,
                   altitude);
+// Check the Wifi status and update TFT
+wifiStatus(&tft, &io);
 }
+
 
 void clock_update()
 {
