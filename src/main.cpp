@@ -43,6 +43,18 @@ void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
   Serial.begin(9600);
 
+// Initializes the EPPROM
+  EEPROM.begin(EEPROM_SIZE); // setup the EEPROM where we'll write and read the max number of
+  //POSTs
+  if(EEPROM.readInt(0)<0)
+  {
+    EEPROM.writeInt(0,0); // if the value stored in EEPROM is negative, then initialise to zero
+    EEPROM.commit();
+  }
+
+
+
+
   if (!SPIFFS.begin()) {
     tft.println("SPIFFS initialisation failed!");
     while (1) yield(); // Stay here twiddling thumbs waiting

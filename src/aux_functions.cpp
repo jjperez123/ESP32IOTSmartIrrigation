@@ -1,5 +1,7 @@
  #include "aux_functions.h"
 
+ int postCounter = 0; // Use this counter to indicate (on the TFT screen) how many
+                     // MQTT posts where completed in the current power cycle.
  void wifiStatus( TFT_eSPI* tft,
                   AdafruitIO_WiFi* io)
 {
@@ -28,6 +30,26 @@ const char* wl_status_to_string(wl_status_t status){
         case WL_DISCONNECTED: return "Disconnected";
         
     }
+}
 
+void postsCounter( TFT_eSPI* tft)
+{
+    int maxPosts = EEPROM.readInt(0);
 
+    postCounter++; // increment the postCounter by one.
+
+    if(postCounter > maxPosts)
+    {
+        maxPosts = postCounter;
+        EEPROM.writeInt(0,maxPosts); // write the new maxPosts in the EEPROM
+        EEPROM.commit();
+    }
+//Wifi Status
+    tft -> loadFont("NotoSansBold15");
+    tft ->setTextColor(TFT_LIGHTGREY, TFT_BLACK);
+    tft ->fillRect(220,0,90,20,TFT_BLACK);
+    tft ->setCursor(220,0);
+    tft ->print(postCounter);
+    tft ->print("/");
+    tft ->print(EEPROM.readInt(0));
 }

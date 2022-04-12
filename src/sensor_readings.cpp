@@ -73,7 +73,8 @@
   bar ->save(f_pressure);
   alt ->save(f_altitude);
 
-
+  // Update the postsCounter value in the EEPROM and the TFT
+  postsCounter(tft);
 
   digitalWrite(LED_PIN, LOW);
   Serial.println("----------------");

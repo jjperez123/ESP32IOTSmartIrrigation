@@ -7,3 +7,5 @@ void wifiStatus( TFT_eSPI* tft,
 
 
 const char* wl_status_to_string(wl_status_t status);
+
+void postsCounter( TFT_eSPI* tft);

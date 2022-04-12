@@ -17,8 +17,9 @@
     #include "network_config.h"
     #include "aux_functions.h"
     #include "clock.h"
-
+    #include "EEPROM.h"
     #define LED_PIN  17
     #define IFTT_PIN 16
+    #define EEPROM_SIZE 2 // We'll use 1 byte in the EEPROM to store the mac number of POSTs
     
 #endif
