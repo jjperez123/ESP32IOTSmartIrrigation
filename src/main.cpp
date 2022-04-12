@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "settings.h"         // The order is important!
 #include "sensor_reading.h"
-//#include "TFT_eSPI.h"         // ESP32 Hardware-specific library
 #include "bmp_functions.h"
 #include "TaskScheduler.h"
 #include "network_config.h"
@@ -64,17 +63,24 @@ void setup() {
   delay(1000);
 
   bool status;
-  // (you can also pass in a Wire library object like &Wire2)
+
   status = bme.begin(0x76);
   if (!status) {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     while (1);
   }
 
+  // Check the wifi status and print on TFT
+  wifiStatus(&tft,&io);
+
   // Connect to Wifi
   Serial.println("Connecting to Wifi...");
   io.connect();
   
+  // Check the Wifi status and update TFT
+  wifiStatus(&tft, &io);
+
+
   // wait for a connection
   while(io.status() < AIO_CONNECTED) {
     Serial.print(".");

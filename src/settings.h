@@ -15,5 +15,10 @@
     #include "TFT_eSPI.h"
     #include "AdafruitIO_WiFi.h"
     #include "network_config.h"
+    #include "aux_functions.h"
     #include "clock.h"
+
+    #define LED_PIN  17
+    #define IFTT_PIN 16
+    
 #endif

@@ -25,6 +25,8 @@
   tft->setTextColor(fg, bg);
   tft->println("Right now...");
 
+  digitalWrite(LED_PIN, HIGH);
+
   f_temperature = bme->readTemperature();
   f_humitidity  = bme->readHumidity();
   f_pressure    = bme->readPressure() / 100.0F;
@@ -73,7 +75,7 @@
 
 
 
-  //digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(LED_PIN, LOW);
   Serial.println("----------------");
 
 }
