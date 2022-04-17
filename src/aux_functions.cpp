@@ -15,6 +15,12 @@
     //tft -> print(io -> networkStatus());
 
 }
+void indicators(  TFT_eSPI* tft, 
+                  AdafruitIO_WiFi* io)
+{
+  wifiStatus(tft, io);
+
+}
 
 
 const char* wl_status_to_string(wl_status_t status){

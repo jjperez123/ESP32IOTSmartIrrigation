@@ -11,11 +11,6 @@ void drawBmp(const char *filename, int16_t x, int16_t y, TFT_eSPI* tft) {
   // Open requested file on SD card
   bmpFS = SPIFFS.open(filename, "r");
 
-  if (!bmpFS)
-  {
-    DEBUGPRINT("File not found");
-    return;
-  }
 
   uint32_t seekOffset;
   uint16_t w, h, row, col;

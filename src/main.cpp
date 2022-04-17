@@ -9,12 +9,15 @@
 
 void sensor_readings_update();
 void clock_update();
+void update_indicators();
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = -18000;  // eastern time is GMT -5 hours * 60 minutes * 60 seconds
 const int   daylightOffset_sec =3600; //3600;
 
-Adafruit_BME280 bme;
+Adafruit_BME280 bme; // I2C
+
+
 
 TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
 
@@ -25,6 +28,7 @@ uint16_t fg = TFT_WHITE;
 // The third argument taks a pointer to a function, but cannot have parameters.
 Task t1_bme280(30000, TASK_FOREVER, &sensor_readings_update);
 Task t2_clock(1000, TASK_FOREVER, &clock_update);
+Task t5_indicators(2000, TASK_FOREVER, &update_indicators);
 
 // Create the scheduler
 Scheduler runner;
@@ -35,13 +39,17 @@ AdafruitIO_WiFi io(IO_USERNAME,IO_KEY,WIFI_SSID,WIFI_PASS);
 AdafruitIO_Feed *temperature =  io.feed("smart-farming.temperature");
 AdafruitIO_Feed *humidity    =  io.feed("smart-farming.humidity");
 AdafruitIO_Feed *barpressure =  io.feed("smart-farming.barpressure");
-AdafruitIO_Feed *altitude    =  io.feed("	smart-farming.altitude");
+AdafruitIO_Feed *altitude    =  io.feed("smart-farming.altitude");
 
 
 
 void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
   Serial.begin(9600);
+
+
+
+
 
 // Initializes the EPPROM
   EEPROM.begin(EEPROM_SIZE); // setup the EEPROM where we'll write and read the max number of
@@ -51,9 +59,6 @@ void setup() {
     EEPROM.writeInt(0,0); // if the value stored in EEPROM is negative, then initialise to zero
     EEPROM.commit();
   }
-
-
-
 
   if (!SPIFFS.begin()) {
     tft.println("SPIFFS initialisation failed!");
@@ -81,6 +86,7 @@ void setup() {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
     while (1);
   }
+
 
   // Check the wifi status and print on TFT
   wifiStatus(&tft,&io);
@@ -111,22 +117,27 @@ void setup() {
   // Add the task to the scheduler
   runner.addTask(t1_bme280);
   runner.addTask(t2_clock);
-
+  runner.addTask(t5_indicators);
   // Enable the task
   t1_bme280.enable();
   t2_clock.enable();
+  t5_indicators.enable();
 
   tft.fillScreen(bg);
   drawBmp("/te.bmp", 160, 198, &tft);
-  // Check the Wifi status and update TFT
-  wifiStatus(&tft, &io);
+
+// -------------------------------------------Configureing the WatchDog timer-------------------------------
+   Serial.println("Configuring WDT...");
+   esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
+   esp_task_wdt_add(NULL); //add current thread to WDT watch
+
 }
 
 void loop() {
-  // Execute the scheduler runner
-  runner.execute();
 
-  io.run();
+    runner.execute();
+    io.run(); 
+    esp_task_wdt_reset(); // feed the WDT
 }
 
 void sensor_readings_update()
@@ -137,8 +148,6 @@ void sensor_readings_update()
                   humidity,
                   barpressure,
                   altitude);
-// Check the Wifi status and update TFT
-wifiStatus(&tft, &io);
 }
 
 
@@ -147,4 +156,9 @@ void clock_update()
   Serial.println(io.statusText());
   //printLocalTime();
   refresh_clock(&tft);
+}
+
+void update_indicators()
+{
+  indicators(&tft, &io);
 }

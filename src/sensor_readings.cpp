@@ -25,7 +25,7 @@
   tft->setTextColor(fg, bg);
   tft->println("Right now...");
 
-  digitalWrite(LED_PIN, HIGH);
+  //digitalWrite(LED_PIN, HIGH);
 
   f_temperature = bme->readTemperature();
   f_humitidity  = bme->readHumidity();

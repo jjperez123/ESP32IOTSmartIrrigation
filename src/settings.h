@@ -18,8 +18,10 @@
     #include "aux_functions.h"
     #include "clock.h"
     #include "EEPROM.h"
+    #include "esp_system.h" // implementing the watchdog timer
+    #include <esp_task_wdt.h>
     #define LED_PIN  17
     #define IFTT_PIN 16
     #define EEPROM_SIZE 2 // We'll use 1 byte in the EEPROM to store the mac number of POSTs
-    
+    #define WDT_TIMEOUT 2
 #endif
