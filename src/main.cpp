@@ -40,7 +40,7 @@ AdafruitIO_Feed *temperature =  io.feed("smart-farming.temperature");
 AdafruitIO_Feed *humidity    =  io.feed("smart-farming.humidity");
 AdafruitIO_Feed *barpressure =  io.feed("smart-farming.barpressure");
 AdafruitIO_Feed *altitude    =  io.feed("smart-farming.altitude");
-
+AdafruitIO_Feed *led_controller = io.feed("lab-enviormnet.led");
 
 
 void setup() {
@@ -98,10 +98,17 @@ void setup() {
   // Connect to Wifi
   Serial.println("Connecting to Wifi...");
   io.connect();
+
+  DEBUGPRINTLN("MQTT controller....");
+
+  //set up a message handler for the count feed.
+  //the handleMessage function (defined below)
+  //will be called whenever a message is
+  // received from adafruit io.
+  led_controller->onMessage(ledMessage);
   
   // Check the Wifi status and update TFT
   wifiStatus(&tft, &io);
-
 
   // wait for a connection
   while(io.status() < AIO_CONNECTED) {
