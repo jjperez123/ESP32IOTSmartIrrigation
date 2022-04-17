@@ -40,7 +40,7 @@ AdafruitIO_Feed *temperature =  io.feed("smart-farming.temperature");
 AdafruitIO_Feed *humidity    =  io.feed("smart-farming.humidity");
 AdafruitIO_Feed *barpressure =  io.feed("smart-farming.barpressure");
 AdafruitIO_Feed *altitude    =  io.feed("smart-farming.altitude");
-AdafruitIO_Feed *led_controller = io.feed("lab-enviormnet.led");
+AdafruitIO_Feed *led_controller = io.feed("smart-farming.led");
 
 
 void setup() {
@@ -100,7 +100,6 @@ void setup() {
   io.connect();
 
   DEBUGPRINTLN("MQTT controller....");
-
   //set up a message handler for the count feed.
   //the handleMessage function (defined below)
   //will be called whenever a message is
