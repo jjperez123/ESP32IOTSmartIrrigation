@@ -10,7 +10,8 @@
                           AdafruitIO_Feed* temp,
                           AdafruitIO_Feed* hum,
                           AdafruitIO_Feed* bar,
-                          AdafruitIO_Feed* alt){
+                          AdafruitIO_Feed* alt,
+                          AdafruitIO_Feed* logger){
   float f_temperature;
   float f_humitidity;
   float f_pressure;
@@ -74,7 +75,8 @@
   alt ->save(f_altitude);
 
   // Update the postsCounter value in the EEPROM and the TFT
-  postsCounter(tft);
+  postsCounter(tft,logger);
+  tft->fillRect(180,0,10,10, TFT_BLACK);
 
   digitalWrite(LED_PIN, LOW);
   Serial.println("----------------");

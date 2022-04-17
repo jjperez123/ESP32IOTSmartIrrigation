@@ -1,4 +1,5 @@
 #include <Arduino.h>
+//#define DEBUGLOG
 #include "settings.h"         // The order is important!
 #include "sensor_reading.h"
 #include "bmp_functions.h"
@@ -27,7 +28,7 @@ uint16_t fg = TFT_WHITE;
 // Setup tasks for the task scheduler
 // The third argument taks a pointer to a function, but cannot have parameters.
 Task t1_bme280(30000, TASK_FOREVER, &sensor_readings_update);
-Task t2_clock(1000, TASK_FOREVER, &clock_update);
+Task t2_clock(1000,   TASK_FOREVER, &clock_update);
 Task t5_indicators(2000, TASK_FOREVER, &update_indicators);
 
 // Create the scheduler
@@ -41,6 +42,8 @@ AdafruitIO_Feed *humidity    =  io.feed("smart-farming.humidity");
 AdafruitIO_Feed *barpressure =  io.feed("smart-farming.barpressure");
 AdafruitIO_Feed *altitude    =  io.feed("smart-farming.altitude");
 AdafruitIO_Feed *led_controller = io.feed("smart-farming.led");
+AdafruitIO_Feed *aio_loger     = io.feed("smart-farming.logger");
+
 
 
 void setup() {
@@ -48,15 +51,20 @@ void setup() {
   pinMode(IFTTT_PIN,OUTPUT); // touch screen led
   Serial.begin(9600);
 
+delay(500);
 
 // Initializes the EPPROM
   EEPROM.begin(EEPROM_SIZE); // setup the EEPROM where we'll write and read the max number of
   //POSTs
-  if(EEPROM.readInt(0)<0)
+  tft.println(EEPROM.readUInt(EEPROM_INDEX));
+
+  if(EEPROM.readUInt(EEPROM_INDEX)<0)
   {
-    EEPROM.writeInt(0,0); // if the value stored in EEPROM is negative, then initialise to zero
+    EEPROM.writeUInt(EEPROM_INDEX,0); // if the value stored in EEPROM is negative, then initialise to zero
     EEPROM.commit();
   }
+
+  delay(500);
 
   if (!SPIFFS.begin()) {
     tft.println("SPIFFS initialisation failed!");
@@ -133,13 +141,20 @@ void setup() {
   t2_clock.enable();
   t5_indicators.enable();
 
-  tft.fillScreen(bg);
+  tft.fillScreen(bg); // clear the screen
   drawBmp("/te.bmp", 160, 198, &tft);
 
-// -------------------------------------------Configureing the WatchDog timer-------------------------------
+  tft.loadFont("NotoSansBold15");
+  tft.setTextColor(TFT_LIGHTGREY, TFT_BACKGROUND);
+  tft.setCursor(230, 135);
+  tft.print("HEAP MEM");
+  
+// Config WDT
    Serial.println("Configuring WDT...");
    esp_task_wdt_init(WDT_TIMEOUT, true); //enable panic so ESP32 restarts
    esp_task_wdt_add(NULL); //add current thread to WDT watch
+
+aio_loger -> save("Setup complete.");
 
 }
 
@@ -158,7 +173,8 @@ void sensor_readings_update()
                   temperature,
                   humidity,
                   barpressure,
-                  altitude);
+                  altitude,
+                  aio_loger);
 }
 
 

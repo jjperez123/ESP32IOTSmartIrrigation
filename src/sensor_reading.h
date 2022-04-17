@@ -17,6 +17,7 @@
                           AdafruitIO_Feed* temp,
                           AdafruitIO_Feed* hum,
                           AdafruitIO_Feed* bar,
-                          AdafruitIO_Feed* alt); 
+                          AdafruitIO_Feed* alt,
+                          AdafruitIO_Feed* aio_loger); 
 
 #endif

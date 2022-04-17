@@ -23,8 +23,15 @@
     #include "mqtt_controller.h"
     #define LED_PIN     17
     #define IFTTT_PIN   16
-    #define EEPROM_SIZE 2 // We'll use 1 byte in the EEPROM to store the mac number of POSTs
-    #define WDT_TIMEOUT 2
+
+    #define TFT_BACKGROUND     TFT_BLACK
+    #define TFT_TEXT           TFT_WHITE
+
+
+    #define EEPROM_SIZE 4 // We'll use 4 byte in the EEPROM to store the mac number of POSTs
+    #define EEPROM_INDEX 0
+
+    #define WDT_TIMEOUT 20
     #define CALIBRATION_FILE "/tft-touch-calData_1" // This file will contain the data from the
                                                   // touchscreen calibration process at boot (only needed once)
 #endif

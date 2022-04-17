@@ -19,6 +19,7 @@ void indicators(  TFT_eSPI* tft,
                   AdafruitIO_WiFi* io)
 {
   wifiStatus(tft, io);
+  heapSize(tft);
 
 }
 
@@ -38,16 +39,27 @@ const char* wl_status_to_string(wl_status_t status){
     }
 }
 
-void postsCounter( TFT_eSPI* tft)
+void postsCounter( TFT_eSPI* tft, AdafruitIO_Feed* logger)
 {
-    int maxPosts = EEPROM.readInt(0);
+    EEPROM.begin(EEPROM_SIZE);
+    unsigned int maxPosts = EEPROM.readUInt(EEPROM_INDEX);
+
 
     postCounter++; // increment the postCounter by one.
 
+    String loggerString = String("Last update counter: " + String(postCounter));
+    Serial.println(loggerString);
+    logger -> save(loggerString);
+
+
     if(postCounter > maxPosts)
     {
+
+        tft->fillRect(180,0,10,10, TFT_GREENYELLOW);
+        Serial.print("maxPosts:");
+        Serial.println(maxPosts);
         maxPosts = postCounter;
-        EEPROM.writeInt(0,maxPosts); // write the new maxPosts in the EEPROM
+        EEPROM.writeUInt(EEPROM_INDEX,maxPosts); // write the new maxPosts in the EEPROM
         EEPROM.commit();
     }
 //Wifi Status
@@ -57,7 +69,7 @@ void postsCounter( TFT_eSPI* tft)
     tft ->setCursor(220,0);
     tft ->print(postCounter);
     tft ->print("/");
-    tft ->print(EEPROM.readInt(0));
+    tft ->print(EEPROM.readUInt(EEPROM_INDEX));
 }
 
 void calibrate_touch_screen(TFT_eSPI* tft)
@@ -142,8 +154,8 @@ void heapSize(TFT_eSPI* tft)
   tft->loadFont("NotoSansBold15");
   tft->setTextColor(TFT_LIGHTGREY, TFT_BLACK);
   // Print memory in an attempt to figure out why wifi is unreliable
-  tft->fillRect(220, 140, 55, 20, TFT_BLACK);
-  tft->setCursor(220, 140);
+  tft->fillRect(220, 150, 55, 20, TFT_BLACK);
+  tft->setCursor(230, 150);
   tft->print(esp_get_free_heap_size());
 
   DEBUGPRINT("Free heap size: ");
