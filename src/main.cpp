@@ -45,10 +45,8 @@ AdafruitIO_Feed *altitude    =  io.feed("smart-farming.altitude");
 
 void setup() {
   pinMode(LED_BUILTIN,OUTPUT);
+  pinMode(IFTTT_PIN,OUTPUT); // touch screen led
   Serial.begin(9600);
-
-
-
 
 
 // Initializes the EPPROM
@@ -67,6 +65,12 @@ void setup() {
 
   // Setup the TFT
   tft.begin();
+  
+  // Calibrate the touch interface
+  // This only needs to be done once
+  // The calibrate data will be stored in the SPIFS
+  // It is importan to calibrate the touch interface after display is rotated.
+  calibrate_touch_screen(&tft);
 
   tft.setRotation(1);
   tft.setTextColor(fg, bg);
@@ -137,6 +141,7 @@ void loop() {
 
     runner.execute();
     io.run(); 
+    readTouch(&tft);
     esp_task_wdt_reset(); // feed the WDT
 }
 

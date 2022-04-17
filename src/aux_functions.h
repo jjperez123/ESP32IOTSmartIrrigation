@@ -10,4 +10,9 @@ void indicators(    TFT_eSPI* tft,
 
 const char* wl_status_to_string(wl_status_t status);
 
+void readTouch(TFT_eSPI* tft);
+
+void calibrate_touch_screen(TFT_eSPI* tft);
+
 void postsCounter( TFT_eSPI* tft);
+

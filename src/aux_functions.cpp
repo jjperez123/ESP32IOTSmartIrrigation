@@ -59,3 +59,93 @@ void postsCounter( TFT_eSPI* tft)
     tft ->print("/");
     tft ->print(EEPROM.readInt(0));
 }
+
+void calibrate_touch_screen(TFT_eSPI* tft)
+{
+  uint16_t calibrationData[5];
+  uint8_t calDataOK = 0;
+
+  DEBUGPRINTLN("starting touch calibration");
+
+  // tft->init();
+
+  tft->setRotation(1); // instead of three
+  tft->fillScreen((0xFFFF));
+
+  tft->setCursor(20, 0, 2);
+  tft->setTextColor(TFT_BLACK, TFT_WHITE);  tft->setTextSize(1);
+  tft->println("calibration run");
+
+  // check file system
+  if (!SPIFFS.begin()) {
+    DEBUGPRINTLN("formating file system");
+
+    SPIFFS.format();
+    SPIFFS.begin();
+  }
+
+  // check if calibration file exists
+  if (SPIFFS.exists(CALIBRATION_FILE)) {
+    fs::File f = SPIFFS.open(CALIBRATION_FILE, "r");    // Using the fs namespace with :: because class File is inside the fs namespace. See FS.h
+    if (f) {
+      if (f.readBytes((char *)calibrationData, 14) == 14)
+        calDataOK = 1;
+      f.close();
+    }
+  }
+  if (calDataOK) {
+    // calibration data valid
+    tft->setTouch(calibrationData);  // To be able to use this function, you must set and uncomment the #define TOUCH_CS 5 in User_Setup.h in TFT_eSPI library
+                                     // In PlatformIO, this is stored in .piolibdeps.
+  } else {
+    // data not valid. recalibrate
+    tft->calibrateTouch(calibrationData, TFT_WHITE, TFT_RED, 15);
+    // store data
+    fs::File f = SPIFFS.open(CALIBRATION_FILE, "w");
+    if (f) {
+      f.write((const unsigned char *)calibrationData, 14);
+      f.close();
+    }
+  }
+
+  tft->fillScreen((0xFFFF));
+}
+
+
+
+
+
+void readTouch(TFT_eSPI* tft)
+{
+  uint16_t x, y;
+  if (tft->getTouch(&x, &y)) {
+    if (x < 3000 && y < 16000)
+    {
+      tft->fillRect(220, 160, 70, 40, TFT_BLACK);
+      tft->setCursor(220, 160, 2);
+      tft->printf("x: %i     ", x);
+      tft->setCursor(220, 175, 2);
+      tft->printf("y: %i    ", y);
+
+      //    tft.drawPixel(320-x, 240-y, TFT_YELLOW);// must adjust the touch coordinates to display coordinates
+
+      if ((x > 40 && x < 90) && ( y > 40 && y < 70))
+        digitalWrite(IFTTT_PIN, HIGH);
+      else
+        digitalWrite(IFTTT_PIN, LOW);
+    }
+  }
+}
+
+void heapSize(TFT_eSPI* tft)
+{
+  tft->loadFont("NotoSansBold15");
+  tft->setTextColor(TFT_LIGHTGREY, TFT_BLACK);
+  // Print memory in an attempt to figure out why wifi is unreliable
+  tft->fillRect(220, 140, 55, 20, TFT_BLACK);
+  tft->setCursor(220, 140);
+  tft->print(esp_get_free_heap_size());
+
+  DEBUGPRINT("Free heap size: ");
+  DEBUGPRINTLN(esp_get_free_heap_size());
+}
