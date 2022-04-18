@@ -1,5 +1,5 @@
 #include <Arduino.h>
-//#define DEBUGLOG
+#define DEBUGLOG
 #include "settings.h"         // The order is important!
 #include "sensor_reading.h"
 #include "bmp_functions.h"
@@ -25,6 +25,7 @@ TFT_eSPI tft = TFT_eSPI();       // Invoke custom library
 uint16_t bg = TFT_BLACK;
 uint16_t fg = TFT_WHITE;
 
+
 // Setup tasks for the task scheduler
 // The third argument taks a pointer to a function, but cannot have parameters.
 Task t1_bme280(30000, TASK_FOREVER, &sensor_readings_update);
@@ -43,6 +44,7 @@ AdafruitIO_Feed *barpressure =  io.feed("smart-farming.barpressure");
 AdafruitIO_Feed *altitude    =  io.feed("smart-farming.altitude");
 AdafruitIO_Feed *led_controller = io.feed("smart-farming.led");
 AdafruitIO_Feed *aio_loger     = io.feed("smart-farming.logger");
+AdafruitIO_Feed *soil           = io.feed("smart-farming.soil");
 
 
 
@@ -53,7 +55,8 @@ void setup() {
 
 delay(500);
 
-// Initializes the EPPROM
+  tft.print("Checking EEPROM... ");
+  // Initializes the EPPROM
   EEPROM.begin(EEPROM_SIZE); // setup the EEPROM where we'll write and read the max number of
   //POSTs
   tft.println(EEPROM.readUInt(EEPROM_INDEX));
@@ -107,16 +110,18 @@ delay(500);
   Serial.println("Connecting to Wifi...");
   io.connect();
 
-  DEBUGPRINTLN("MQTT controller....");
+  // Check the Wifi status and update TFT
+  wifiStatus(&tft, &io);
+
   //set up a message handler for the count feed.
   //the handleMessage function (defined below)
   //will be called whenever a message is
   // received from adafruit io.
+  DEBUGPRINTLN("MQTT controller....");
   led_controller->onMessage(ledMessage);
-  
-  // Check the Wifi status and update TFT
-  wifiStatus(&tft, &io);
 
+  led_controller->get();
+  
   // wait for a connection
   while(io.status() < AIO_CONNECTED) {
     Serial.print(".");
@@ -174,7 +179,8 @@ void sensor_readings_update()
                   humidity,
                   barpressure,
                   altitude,
-                  aio_loger);
+                  aio_loger,
+                  soil);
 }
 
 

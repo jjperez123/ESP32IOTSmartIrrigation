@@ -69,7 +69,7 @@ void postsCounter( TFT_eSPI* tft, AdafruitIO_Feed* logger)
     tft ->setCursor(220,0);
     tft ->print(postCounter);
     tft ->print("/");
-    tft ->print(EEPROM.readUInt(EEPROM_INDEX));
+    tft ->print(EEPROM.readInt(EEPROM_INDEX));
 }
 
 void calibrate_touch_screen(TFT_eSPI* tft)
@@ -133,10 +133,10 @@ void readTouch(TFT_eSPI* tft)
   if (tft->getTouch(&x, &y)) {
     if (x < 3000 && y < 16000)
     {
-      tft->fillRect(220, 160, 70, 40, TFT_BLACK);
-      tft->setCursor(220, 160, 2);
+      tft->fillRect(250, 170, 70, 40, TFT_BLACK);
+      tft->setCursor(250, 170, 2);
       tft->printf("x: %i     ", x);
-      tft->setCursor(220, 175, 2);
+      tft->setCursor(250, 185, 2);
       tft->printf("y: %i    ", y);
 
       //    tft.drawPixel(320-x, 240-y, TFT_YELLOW);// must adjust the touch coordinates to display coordinates
@@ -154,7 +154,7 @@ void heapSize(TFT_eSPI* tft)
   tft->loadFont("NotoSansBold15");
   tft->setTextColor(TFT_LIGHTGREY, TFT_BLACK);
   // Print memory in an attempt to figure out why wifi is unreliable
-  tft->fillRect(220, 150, 55, 20, TFT_BLACK);
+  tft->fillRect(230, 150, 55, 20, TFT_BLACK);
   tft->setCursor(230, 150);
   tft->print(esp_get_free_heap_size());
 

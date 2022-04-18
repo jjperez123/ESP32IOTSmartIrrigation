@@ -34,4 +34,8 @@
     #define WDT_TIMEOUT 20
     #define CALIBRATION_FILE "/tft-touch-calData_1" // This file will contain the data from the
                                                   // touchscreen calibration process at boot (only needed once)
+
+    #define SOIL_PIN 34
+    #define AIR_VALUE 3375
+    #define WET_VALUE 1675 
 #endif

@@ -11,11 +11,13 @@
                           AdafruitIO_Feed* hum,
                           AdafruitIO_Feed* bar,
                           AdafruitIO_Feed* alt,
-                          AdafruitIO_Feed* logger){
+                          AdafruitIO_Feed* logger,
+                          AdafruitIO_Feed* soil){
   float f_temperature;
   float f_humitidity;
   float f_pressure;
   float f_altitude;
+  float f_moisture;
 
   tft->loadFont("RobotoSerif-36");
   tft->setRotation(1);
@@ -32,6 +34,8 @@
   f_humitidity  = bme->readHumidity();
   f_pressure    = bme->readPressure() / 100.0F;
   f_altitude    = bme->readAltitude(SEALEVELPRESSURE_HPA);
+  f_moisture        = moisture_LVL(SOIL_PIN);
+
 
   tft->setTextColor(TFT_YELLOW, bg);
   
@@ -60,19 +64,28 @@
   tft->print(f_pressure);
   tft->println(" hpa");
 
-  // Appx altitude
-  Serial.print(f_altitude);
-  Serial.println(" m");
+  // // Appx altitude
+  // Serial.print(f_altitude);
+  // Serial.println(" m");
+  // tft->fillRect(5,170,200,30,bg);
+  // tft->setCursor(5,170);
+  // tft->print(f_altitude);
+  // tft->println(" m");
+
+  // Soil Moisture level
+  Serial.print(f_moisture);
+  Serial.println(" %");
   tft->fillRect(5,170,200,30,bg);
   tft->setCursor(5,170);
-  tft->print(f_altitude);
-  tft->println(" m");
+  tft->print(f_moisture);
+  tft->println(" %");
 
   // Send data to Adafruit.IO
   temp ->save(f_temperature);
   hum ->save(f_humitidity);
   bar ->save(f_pressure);
-  alt ->save(f_altitude);
+  soil ->save(f_moisture);
+  //alt ->save(alt);
 
   // Update the postsCounter value in the EEPROM and the TFT
   postsCounter(tft,logger);
@@ -82,3 +95,15 @@
   Serial.println("----------------");
 
 }
+
+
+/*
+  Return the dirt moisture level.
+*/
+ int moisture_LVL(int PIN)
+ {
+   float analogReading = 0;
+   analogReading = analogRead(SOIL_PIN); // read sensor
+   analogReading = map(analogReading, AIR_VALUE, WET_VALUE,0,100);
+   return analogReading;
+ }
