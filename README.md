@@ -20,4 +20,4 @@ The data is also send to a dashboard for viewing. The dashboard is implemeted us
 
 ### Link to Project Report 
 For more information about the project download the pdf report.
-[SmartIrrigationReport.pdf](https://github.com/jjperez123/ESP32IOTSmartIrrigation/files/8656404/EdgebasedEmbeddAN.1.pdf)
+[EdgebasedEmbeddAN.pdf](https://github.com/jjperez123/ESP32IOTSmartIrrigation/files/8656512/EdgebasedEmbeddAN.pdf)
