@@ -14,3 +14,9 @@ The data is also send to a dashboard for viewing. The dashboard is implemeted us
 ![Screen Shot 2022-05-08 at 4 49 42 PM](https://user-images.githubusercontent.com/73910337/167523783-91c99ad8-1d1e-47dd-93f7-82041ec9b6cd.png)
 
 
+### The first prototype of the smart irrigation system.
+![finalversion (1)](https://user-images.githubusercontent.com/73910337/167525405-3e11f6e6-0aca-4c76-a61f-1c28ce5fe7f3.png)
+
+
+### Link to Project Report 
+[EdgebasedEmbeddAN (1).pdf](https://github.com/jjperez123/ESP32IOTSmartIrrigation/files/8656404/EdgebasedEmbeddAN.1.pdf)
