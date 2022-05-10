@@ -1,10 +1,11 @@
-// cpp files contain the implementation of our program while h files contains the declarations
+
 #include <Arduino.h>
 
 #include "sensor_reading.h"
 
 
-
+// Collects and sends sensor reading to adaruit IO and Lora radio and display it on screen
+// 
     void refresh_readings(Adafruit_BME280* bme, 
                           TFT_eSPI*        tft,
                           AdafruitIO_Feed* temp,
@@ -64,6 +65,7 @@
   tft->print(f_pressure);
   tft->println(" hpa");
 
+// altitude is not really usefull
   // // Appx altitude
   // Serial.print(f_altitude);
   // Serial.println(" m");
@@ -87,6 +89,8 @@
   soil ->save(f_moisture);
   //alt ->save(alt);
 
+  LoRa_sender(f_temperature, f_humitidity, f_pressure,f_altitude,f_moisture);
+
   // Update the postsCounter value in the EEPROM and the TFT
   postsCounter(tft,logger);
   tft->fillRect(180,0,10,10, TFT_BLACK);
@@ -107,3 +111,33 @@
    analogReading = map(analogReading, AIR_VALUE, WET_VALUE,0,100);
    return analogReading;
  }
+
+// Transmit data thorugh Lora Radio
+  void LoRa_sender(float f_temperature, 
+                  float f_humidity, 
+                  float f_pressure, 
+                  float f_altitude, 
+                  float f_moisture)
+  {
+  Serial.print("Sending packet: ");
+  // send packet
+  LoRa.beginPacket();
+  LoRa.print("temp(C) :");
+  LoRa.println(String(f_temperature));
+  delay(1000);
+  LoRa.print("hum(%) :");
+  LoRa.println(f_humidity);
+  delay(1000);
+  LoRa.print("press(hpa) :");
+  LoRa.println(f_pressure);
+  //delay(1000);
+ //LoRa.print("alt :");
+  //LoRa.println(f_altitude);
+  delay(1000);
+  LoRa.print("moist(%) :");
+  LoRa.println(f_moisture);
+  delay(1000);
+  LoRa.endPacket();
+  delay(1000);
+  LoRa.sleep();
+  }

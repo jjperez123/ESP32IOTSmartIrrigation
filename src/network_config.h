@@ -1,7 +1,7 @@
 # include<Arduino.h>
 
 #define IO_USERNAME  "JJP24"
-#define IO_KEY       "aio_wWIO72C2qdhQAjv0pJsqMgpBDy8t"
+#define IO_KEY       "aio_sCrT31QOporaYgQcDAQcDfs0j9Km"
 
 // home network credentials
 #define WIFI_SSID  "PerezFamily"

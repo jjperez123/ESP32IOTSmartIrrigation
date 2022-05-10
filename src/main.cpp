@@ -12,11 +12,15 @@ void sensor_readings_update();
 void clock_update();
 void update_indicators();
 
+
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = -18000;  // eastern time is GMT -5 hours * 60 minutes * 60 seconds
 const int   daylightOffset_sec =3600; //3600;
 
+
+
 Adafruit_BME280 bme; // I2C
+
 
 
 
@@ -31,6 +35,7 @@ uint16_t fg = TFT_WHITE;
 Task t1_bme280(30000, TASK_FOREVER, &sensor_readings_update);
 Task t2_clock(1000,   TASK_FOREVER, &clock_update);
 Task t5_indicators(2000, TASK_FOREVER, &update_indicators);
+
 
 // Create the scheduler
 Scheduler runner;
@@ -49,11 +54,22 @@ AdafruitIO_Feed *soil           = io.feed("smart-farming.soil");
 
 
 void setup() {
+
+  
   pinMode(LED_BUILTIN,OUTPUT);
   pinMode(IFTTT_PIN,OUTPUT); // touch screen led
   Serial.begin(9600);
+  delay(500);
 
-delay(500);
+  LoRa.setPins(csPin, resetPin, irqPin);
+    
+
+   if (!LoRa.begin(915E6)) {
+    Serial.println("Starting LoRa failed!");
+    while (1);
+  }
+
+  delay(500);
 
   tft.print("Checking EEPROM... ");
   // Initializes the EPPROM
@@ -123,7 +139,7 @@ delay(500);
   led_controller->get();
   
   // wait for a connection
-  while(io.status() < AIO_CONNECTED) {
+  while(io.status() < AIO_NET_CONNECTED) {
     Serial.print(".");
     delay(500);
   }
@@ -195,3 +211,4 @@ void update_indicators()
 {
   indicators(&tft, &io);
 }
+

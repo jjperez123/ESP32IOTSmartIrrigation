@@ -23,4 +23,10 @@
    
       int moisture_LVL(int PIN);
 
+      void LoRa_sender(float temperature, 
+                      float  humidity, 
+                      float  pressure, 
+                      float  altitude,
+                      float  moisture);
+
 #endif

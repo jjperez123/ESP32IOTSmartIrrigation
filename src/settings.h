@@ -21,6 +21,8 @@
     #include "esp_system.h" // implementing the watchdog timer
     #include <esp_task_wdt.h>
     #include "mqtt_controller.h"
+    #include "LoRa.h"
+    #include <SPI.h>
     #define LED_PIN     17
     #define IFTTT_PIN   16
 
@@ -38,4 +40,9 @@
     #define SOIL_PIN 34
     #define AIR_VALUE 3375
     #define WET_VALUE 1675 
+
+    // // Lora pin assingments
+     #define resetPin 16
+     #define csPin  4 
+     #define irqPin 17
 #endif
